@@ -2,15 +2,26 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Button, Card, Modal } from 'react-bootstrap'
+import { storeHistoryAPI } from '../services/allAPI'
 
-const VideoCard = ({displayData}) => {
+const VideoCard = ({ displayData }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = async() => {
+  const handleShow = async () => {
     setShow(true);
+
     //save history in json server
-    
+    const { caption, link } = displayData
+
+    //get date & time to watch video
+    const sysTime = new Date()
+    const timeStamp = sysTime.toLocaleString('en-US', { timeZoneName: 'short' })
+    console.log(timeStamp);
+    const videoDetails = { caption, link, timeStamp }
+    await storeHistoryAPI(videoDetails)
+    // console.log(videoDetails);
+
   }
 
   return (

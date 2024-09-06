@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getHistoryAPI } from '../services/allAPI'
 
 const WatchHistory = () => {
+  const [historyDetails, setHistoryDetails] = useState([])
+  const getHistory = async () => {
+    const response = await getHistoryAPI()
+    console.log(response);
+    if (response.status >= 200 && response.status < 300) {
+      setHistoryDetails(response.data)
+    }
+
+  }
+
+  useEffect(() => {
+    getHistory()
+  }, [])
   return (
     <div className='container' style={{ paddingTop: '100px' }}>
       <div className=' mb-5 d-flex justify-content-between'>
@@ -19,13 +33,16 @@ const WatchHistory = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Caption</td>
-            <td><a href="" target='_blank'>Link</a></td>
-            <td>Time</td>
-            <td><button className='btn'><i class="fa-solid fa-trash-can text-danger"></i></button></td>
-          </tr>
+          {historyDetails?.map((details, index) => (
+            <tr key={details?.id}>
+              <td>{index+1}</td>
+              <td>{details?.caption}</td>
+              <td><a href={details?.link} target='_blank'>{details?.link}</a></td>
+              <td>{details?.timeStamp}</td>
+              <td><button className='btn'><i class="fa-solid fa-trash-can text-danger"></i></button></td>
+            </tr>
+          ))
+          }
         </tbody>
       </table>
     </div>
