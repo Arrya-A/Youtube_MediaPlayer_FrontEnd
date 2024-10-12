@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getHistoryAPI } from '../services/allAPI'
+import { getHistoryAPI, removeHistoryAPI } from '../services/allAPI'
 
 const WatchHistory = () => {
   const [historyDetails, setHistoryDetails] = useState([])
@@ -10,9 +10,14 @@ const WatchHistory = () => {
     if (response.status >= 200 && response.status < 300) {
       setHistoryDetails(response.data)
     }
-
   }
+  console.log(historyDetails);
 
+
+  const removeHistory = async (historyId) => {
+    await removeHistoryAPI(historyId)
+    getHistory()
+  }
   useEffect(() => {
     getHistory()
   }, [])
@@ -33,15 +38,19 @@ const WatchHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {historyDetails?.map((details, index) => (
-            <tr key={details?.id}>
-              <td>{index+1}</td>
-              <td>{details?.caption}</td>
-              <td><a href={details?.link} target='_blank'>{details?.link}</a></td>
-              <td>{details?.timeStamp}</td>
-              <td><button className='btn'><i class="fa-solid fa-trash-can text-danger"></i></button></td>
-            </tr>
-          ))
+          {
+            historyDetails.length>0?
+            historyDetails?.map((details, index) => (
+              <tr key={details?.id}>
+                <td>{index + 1}</td>
+                <td>{details?.caption}</td>
+                <td><a href={details?.link} target='_blank'>{details?.link}</a></td>
+                <td>{details?.timeStamp}</td>
+                <td><button onClick={() => removeHistory(details?.id)} className='btn'><i class="fa-solid fa-trash-can text-danger"></i></button></td>
+              </tr>
+            ))
+            :
+            <div className='text-danger fw-bolder'>Your Watch History is Empty</div>
           }
         </tbody>
       </table>

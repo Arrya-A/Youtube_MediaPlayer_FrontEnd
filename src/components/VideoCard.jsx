@@ -2,9 +2,9 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Button, Card, Modal } from 'react-bootstrap'
-import { storeHistoryAPI } from '../services/allAPI'
+import { removeVideoAPI, storeHistoryAPI } from '../services/allAPI'
 
-const VideoCard = ({ displayData }) => {
+const VideoCard = ({ displayData, setDeleteVideoResponse, insideCategory }) => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -24,14 +24,28 @@ const VideoCard = ({ displayData }) => {
 
   }
 
+  const removeVideo = async (videoId) => {
+    const result = await removeVideoAPI(videoId)
+    // pass response to view component (child to parent)
+    setDeleteVideoResponse(result?.data)
+  }
+
+  const videodragStart = (e, videoId) => {
+    console.log(`Dragging started with video id: ${videoId}`);
+    // share video id along with ondragstart event
+    e.dataTransfer.setData("vId", videoId)
+  }
   return (
     <>
-      <Card style={{ width: '100%' }} className='mt-4'>
+      <Card draggable={true} onDragStart={e => videodragStart(e, displayData?.id)} style={{ width: '100%' }} className='mt-4'>
         <Card.Img onClick={handleShow} variant="top" src={displayData?.url} height={'250px'} />
         <Card.Body>
           <div className='d-flex  justify-content-between'>
             <Card.Text>{displayData.caption}</Card.Text>
-            <Button variant="danger"><FontAwesomeIcon icon={faTrashCan} /></Button>
+            {
+              !insideCategory &&
+              <Button onClick={() => removeVideo(displayData?.id)} variant="danger"><FontAwesomeIcon icon={faTrashCan} /></Button>
+            }
           </div>
         </Card.Body>
       </Card>

@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { uploadVideoAPI } from '../services/allAPI';
 
-const Add = ({setUploadVideoResponse}) => {
+const Add = ({ setUploadVideoResponse }) => {
   const [invalidLink, setInvalidLink] = useState(false)
   const [videoDetails, setVideoDetails] = useState({
     caption: '',
@@ -21,6 +21,7 @@ const Add = ({setUploadVideoResponse}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
   const getEmbedURL = (link) => {
     if (link.includes("v=")) {
       let videoId = link.split("v=")[1].slice(0, 11)
@@ -33,8 +34,6 @@ const Add = ({setUploadVideoResponse}) => {
       console.log("invalid url");
       setInvalidLink(true)
       setVideoDetails({ ...videoDetails, link: '' })
-
-
     }
   }
 
@@ -56,8 +55,8 @@ const Add = ({setUploadVideoResponse}) => {
     } else {
       toast.warning("Please fill the form completely")
     }
-
   }
+
 
   return (
     <>
